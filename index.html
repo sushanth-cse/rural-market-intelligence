@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AgriPulse AI - Rural Market & Supply Chain Intelligence</title>
+  <meta name="description" content="AI-powered rural market intelligence, live mandi prices, crop price predictions, direct B2B buyer marketplace, and supply chain optimization for farmers.">
+  <link rel="stylesheet" href="style.css">
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- Chart.js for AI Forecast Visualizations -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!-- Canvas Confetti for Deal celebration -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+</head>
+<body>
+
+  <!-- Real-time Mandi Price Ticker Tape -->
+  <div class="ticker-wrap">
+    <div class="ticker-badge">
+      <i data-lucide="activity"></i> LIVE MANDI RATES
+    </div>
+    <div class="ticker-move" id="liveTicker">
+      <!-- Injected by JavaScript -->
+    </div>
+  </div>
+
+  <!-- Main Navigation Header -->
+  <header class="navbar">
+    <div class="container nav-content">
+      <a href="#" class="brand-logo">
+        <div class="logo-icon">
+          <i data-lucide="sprout"></i>
+        </div>
+        <div>
+          <div class="brand-name">AgriPulse <span style="color:var(--primary-emerald)">AI</span></div>
+        </div>
+        <span class="brand-tag">Hackathon Edition</span>
+      </a>
+
+      <div class="nav-actions">
+        <!-- Multilingual Switcher -->
+        <select id="langSelect" class="lang-selector" onchange="changeLanguage(this.value)">
+          <option value="en">🌐 English</option>
+          <option value="hi">🇮🇳 हिंदी (Hindi)</option>
+          <option value="mr">🇮🇳 मराठी (Marathi)</option>
+          <option value="pa">🇮🇳 ਪੰਜਾਬੀ (Punjabi)</option>
+          <option value="te">🇮🇳 తెలుగు (Telugu)</option>
+          <option value="ta">🇮🇳 தமிழ் (Tamil)</option>
+          <option value="kn">🇮🇳 ಕನ್ನಡ (Kannada)</option>
+          <option value="bn">🇮🇳 বাংলা (Bengali)</option>
+        </select>
+
+        <div class="status-pill">
+          <div class="status-dot"></div>
+          <span id="txt-live-status">Agri-Node Sync: 2,410 Mandis</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="container" style="margin-top: 1.5rem;">
+
+    <!-- Navigation Tabs -->
+    <div class="tabs-header">
+      <button class="tab-btn active" onclick="switchTab('mandi')" id="btn-tab-mandi">
+        <i data-lucide="store"></i> <span data-i18n="tab_mandi">Mandi Intelligence</span>
+      </button>
+      <button class="tab-btn" onclick="switchTab('prediction')" id="btn-tab-prediction">
+        <i data-lucide="trending-up"></i> <span data-i18n="tab_ai_forecast">AI Price & Demand</span>
+      </button>
+      <button class="tab-btn" onclick="switchTab('supplychain')" id="btn-tab-supplychain">
+        <i data-lucide="truck"></i> <span data-i18n="tab_supply_chain">Supply Chain Router</span>
+      </button>
+      <button class="tab-btn" onclick="switchTab('b2b')" id="btn-tab-b2b">
+        <i data-lucide="handshake"></i> <span data-i18n="tab_b2b">Direct B2B Market</span>
+      </button>
+      <button class="tab-btn" onclick="switchTab('ai-advisor')" id="btn-tab-ai-advisor">
+        <i data-lucide="bot"></i> <span data-i18n="tab_advisor">KrishiMitra AI</span>
+      </button>
+      <button class="tab-btn" onclick="switchTab('income')" id="btn-tab-income">
+        <i data-lucide="calculator"></i> <span data-i18n="tab_income">Income Maximizer</span>
+      </button>
+    </div>
+
+    <!-- Hero Banner -->
+    <section class="hero-banner">
+      <div class="hero-grid">
+        <div>
+          <h1 class="hero-title" id="hero-heading">Empowering Farmers with <span>Data-Driven Market Intelligence</span></h1>
+          <p class="hero-subtitle" id="hero-desc">Real-time Mandi price discovery, AI crop demand prediction, direct B2B buyer connectivity, and route profit optimization for rural prosperity.</p>
+          <div style="display:flex; gap: 1rem; flex-wrap:wrap;">
+            <button class="btn btn-primary" onclick="switchTab('prediction')">
+              <i data-lucide="sparkles"></i> View AI Crop Predictions
+            </button>
+            <button class="btn btn-outline" onclick="switchTab('b2b')">
+              <i data-lucide="shopping-bag"></i> Connect With Bulk Buyers
+            </button>
+          </div>
+        </div>
+
+        <div class="hero-stats">
+          <div class="stat-card">
+            <div class="stat-val">2,410+</div>
+            <div class="stat-lbl">Live Mandis</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-val" style="color:var(--accent-amber);">94.2%</div>
+            <div class="stat-lbl">AI Forecast Accuracy</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-val" style="color:var(--accent-cyan);">+22.4%</div>
+            <div class="stat-lbl">Avg Farmer Profit Boost</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 1: MANDI INTELLIGENCE -->
+    <div id="view-mandi" class="tab-view">
+      <div class="card-panel">
+        <div class="panel-header">
+          <div>
+            <h2 class="panel-title"><i data-lucide="search"></i> Nationwide Mandi Live Prices</h2>
+            <p style="color:var(--text-muted); font-size:0.875rem;">Explore real-time crop arrivals, modal rates, daily price shifts, and nearby market distances.</p>
+          </div>
+
+          <div style="display:flex; gap:1rem; flex-wrap:wrap;">
+            <div class="search-input-group">
+              <i data-lucide="search" style="color:var(--text-dim)"></i>
+              <input type="text" id="mandiSearch" placeholder="Search crop or mandi (e.g. Wheat, Pune)..." oninput="filterMandiData()">
+            </div>
+
+            <select id="stateFilter" class="filter-select" onchange="filterMandiData()">
+              <option value="ALL">All States</option>
+              <option value="Punjab">Punjab</option>
+              <option value="Maharashtra">Maharashtra</option>
+              <option value="Uttar Pradesh">Uttar Pradesh</option>
+              <option value="Madhya Pradesh">Madhya Pradesh</option>
+              <option value="Karnataka">Karnataka</option>
+              <option value="Rajasthan">Rajasthan</option>
+            </select>
+
+            <select id="categoryFilter" class="filter-select" onchange="filterMandiData()">
+              <option value="ALL">All Categories</option>
+              <option value="Cereals">Cereals & Grains</option>
+              <option value="Pulses">Pulses & Legumes</option>
+              <option value="Vegetables">Vegetables & Fruits</option>
+              <option value="Oilseeds">Oilseeds</option>
+              <option value="Spices">Spices</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="table-responsive">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Crop & Grade</th>
+                <th>Mandi & State</th>
+                <th>Category</th>
+                <th>Min / Max (₹/Qtl)</th>
+                <th>Modal Price (₹/Qtl)</th>
+                <th>24h Trend</th>
+                <th>Arrival Vol</th>
+                <th>Distance</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="mandiTableBody">
+              <!-- Injected by JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECTION 2: AI PRICE & DEMAND PREDICTION ENGINE -->
+    <div id="view-prediction" class="tab-view" style="display:none;">
+      <div class="card-panel">
+        <div class="panel-header">
+          <div>
+            <h2 class="panel-title"><i data-lucide="brain-circuit"></i> AI Price & Demand Prediction Engine</h2>
+            <p style="color:var(--text-muted); font-size:0.875rem;">Machine learning forecaster trained on 10 years of mandi arrival data, satellite weather patterns, and festival demand spikes.</p>
+          </div>
+
+          <div style="display:flex; gap:1rem;">
+            <select id="forecastCropSelect" class="filter-select" onchange="updateForecastChart()">
+              <option value="Wheat">🌾 Wheat (Gehun)</option>
+              <option value="Tomato">🍅 Tomato (Tamatar)</option>
+              <option value="Soybean">🌱 Soybean</option>
+              <option value="Cotton">☁️ Cotton (Kapas)</option>
+              <option value="Rice">🍚 Basmati Rice</option>
+              <option value="Onion">🧅 Onion (Pyaz)</option>
+            </select>
+
+            <select id="forecastDuration" class="filter-select" onchange="updateForecastChart()">
+              <option value="7">7 Days Horizon</option>
+              <option value="14">14 Days Horizon</option>
+              <option value="30">30 Days Horizon</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="grid-2">
+          <div>
+            <div class="canvas-wrapper">
+              <canvas id="predictionChartCanvas"></canvas>
+            </div>
+          </div>
+
+          <div>
+            <!-- AI Recommendation Highlight Box -->
+            <div id="aiRecommendationCard" class="ai-recommendation-box">
+              <div class="ai-icon-pulse">
+                <i data-lucide="sparkles"></i>
+              </div>
+              <div>
+                <div style="font-size:0.8rem; font-weight:700; color:var(--primary-emerald); text-transform:uppercase; letter-spacing:0.5px;">AGRIPULSE AI DECISION MATRIX</div>
+                <h3 id="recActionTitle" style="font-family:var(--font-heading); font-size:1.3rem; margin:0.3rem 0; color:#FFF;">RECOMMENDATION: HOLD HARVEST FOR 5 DAYS</h3>
+                <p id="recActionDesc" style="color:var(--text-muted); font-size:0.9rem;">Arrival volumes in northern mandis are expected to drop by 18% next week due to unseasonal rain forecast. Prices projected to rise from ₹2,280 to ₹2,475 (+8.55%).</p>
+                
+                <div style="margin-top:1rem; display:flex; gap:1.5rem;">
+                  <div>
+                    <div style="font-size:0.75rem; color:var(--text-muted);">Confidence Score</div>
+                    <div style="font-family:var(--font-heading); font-size:1.2rem; font-weight:800; color:var(--accent-amber);">94.8%</div>
+                  </div>
+                  <div>
+                    <div style="font-size:0.75rem; color:var(--text-muted);">Expected Net Margin</div>
+                    <div style="font-family:var(--font-heading); font-size:1.2rem; font-weight:800; color:var(--primary-emerald);">+₹195 / Quintal</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- What-If Simulator -->
+            <div style="margin-top:1.5rem; background:var(--bg-card-solid); border:1px solid var(--border-subtle); padding:1.25rem; border-radius:var(--radius-md);">
+              <h4 style="font-family:var(--font-heading); margin-bottom:1rem; display:flex; align-items:center; gap:0.5rem;"><i data-lucide="sliders" style="color:var(--accent-cyan);"></i> "What-If" Market Stress Test</h4>
+              
+              <div style="margin-bottom:1rem;">
+                <div style="display:flex; justify-content:space-between; font-size:0.85rem; margin-bottom:0.4rem;">
+                  <span>Rainfall Anomaly Impact</span>
+                  <span id="val-rain" style="color:var(--accent-cyan); font-weight:700;">Normal (0%)</span>
+                </div>
+                <input type="range" id="sliderRain" min="-30" max="30" value="0" style="width:100%; accent-color:var(--accent-cyan);" oninput="simulateScenario()">
+              </div>
+
+              <div>
+                <div style="display:flex; justify-content:space-between; font-size:0.85rem; margin-bottom:0.4rem;">
+                  <span>Festival Demand Surge</span>
+                  <span id="val-fest" style="color:var(--accent-amber); font-weight:700;">+15% Surge</span>
+                </div>
+                <input type="range" id="sliderFest" min="0" max="50" value="15" style="width:100%; accent-color:var(--accent-amber);" oninput="simulateScenario()">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECTION 3: SUPPLY CHAIN NET REALIZATION ROUTER -->
+    <div id="view-supplychain" class="tab-view" style="display:none;">
+      <div class="card-panel">
+        <div class="panel-header">
+          <div>
+            <h2 class="panel-title"><i data-lucide="navigation"></i> Farm-to-Market Net Realization Router</h2>
+            <p style="color:var(--text-muted); font-size:0.875rem;">Calculates true take-home revenue across multiple mandis after accounting for diesel freight costs, transit crop spoilage, loading fees, and mandi commission.</p>
+          </div>
+          <div>
+            <span class="badge badge-emerald"><i data-lucide="shield-check"></i> Real-time Freight Rates Connected</span>
+          </div>
+        </div>
+
+        <div style="background:var(--bg-card-solid); border:1px solid var(--border-subtle); padding:1.25rem; border-radius:var(--radius-md); margin-bottom:1.5rem;">
+          <div style="display:grid; grid-template-columns: repeat(4, 1fr); gap:1rem;">
+            <div>
+              <label style="font-size:0.8rem; color:var(--text-muted); display:block; margin-bottom:0.4rem;">Crop Harvest Volume (Quintals)</label>
+              <input type="number" id="scVolume" value="100" class="filter-select" style="width:100%;" onchange="calculateSupplyChainRoutes()">
+            </div>
+            <div>
+              <label style="font-size:0.8rem; color:var(--text-muted); display:block; margin-bottom:0.4rem;">Vehicle Type</label>
+              <select id="scVehicle" class="filter-select" style="width:100%;" onchange="calculateSupplyChainRoutes()">
+                <option value="pickup">Small Commercial Vehicle (1.5 Ton)</option>
+                <option value="truck" selected>Medium Freight Truck (10 Ton)</option>
+                <option value="reefer">Refrigerated Cold-Storage Truck</option>
+              </select>
+            </div>
+            <div>
+              <label style="font-size:0.8rem; color:var(--text-muted); display:block; margin-bottom:0.4rem;">Your Harvest Origin Location</label>
+              <input type="text" id="scOrigin" value="Nashik, Maharashtra" class="filter-select" style="width:100%;" readonly>
+            </div>
+            <div>
+              <label style="font-size:0.8rem; color:var(--text-muted); display:block; margin-bottom:0.4rem;">Perishable Risk Factor</label>
+              <select id="scPerishability" class="filter-select" style="width:100%;" onchange="calculateSupplyChainRoutes()">
+                <option value="low">Low (Grains/Pulses - 0.5%/100km)</option>
+                <option value="high" selected>High (Tomatoes/Fruits - 3.5%/100km)</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div class="grid-3" id="supplyChainCardsContainer">
+          <!-- Injected by JS -->
+        </div>
+      </div>
+    </div>
+
+    <!-- SECTION 4: DIRECT B2B BUYER MARKETPLACE -->
+    <div id="view-b2b" class="tab-view" style="display:none;">
+      <div class="card-panel">
+        <div class="panel-header">
+          <div>
+            <h2 class="panel-title"><i data-lucide="building-2"></i> Direct B2B Buyer Marketplace (Farmer-to-Enterprise)</h2>
+            <p style="color:var(--text-muted); font-size:0.875rem;">Bypassing middlemen: Direct bulk procurement from verified food processors, supermarket chains, and agro-exporters with digital escrow guarantee.</p>
+          </div>
+          <button class="btn btn-amber" onclick="showToast('Listing form opened! Farmers can post bulk crop batches.')">
+            <i data-lucide="plus-circle"></i> List My Crop Batch
+          </button>
+        </div>
+
+        <div class="grid-3" id="b2bBuyersContainer">
+          <!-- Injected by JS -->
+        </div>
+      </div>
+    </div>
+
+    <!-- SECTION 5: KRISHIMITRA AI ADVISOR -->
+    <div id="view-ai-advisor" class="tab-view" style="display:none;">
+      <div class="card-panel">
+        <div class="panel-header">
+          <div>
+            <h2 class="panel-title"><i data-lucide="bot"></i> KrishiMitra AI - Multilingual Rural Advisor</h2>
+            <p style="color:var(--text-muted); font-size:0.875rem;">Ask questions in any language about market trends, government subsidies, crop pest control, soil health, and e-NAM registration.</p>
+          </div>
+          <div>
+            <button class="btn btn-outline" onclick="toggleVoiceSim()">
+              <i data-lucide="mic" id="voiceMicIcon"></i> <span id="voiceMicStatus">Voice Input Mode</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="chat-container">
+          <div class="chat-messages" id="chatMessages">
+            <div class="msg-bubble msg-bot">
+              <div class="msg-bot-header">
+                <i data-lucide="sparkles"></i> KRISHIMITRA AI ADVISOR
+              </div>
+              Namaste! I am your AI Market & Agronomy Assistant. How can I empower your farming business today? Ask me about current prices, best time to harvest, or government schemes!
+            </div>
+          </div>
+
+          <div class="chat-prompts-bar">
+            <button class="prompt-chip" onclick="sendPrompt('What is the forecast price for Wheat in Punjab?')">🌾 What is the forecast price for Wheat in Punjab?</button>
+            <button class="prompt-chip" onclick="sendPrompt('How do I apply for PM-KISAN ₹6,000 scheme?')">📜 How do I apply for PM-KISAN scheme?</button>
+            <button class="prompt-chip" onclick="sendPrompt('Which nearby buyer pays the highest rate for Tomatoes?')">🍅 Best buyer for Tomatoes near me?</button>
+            <button class="prompt-chip" onclick="sendPrompt('How to prevent early blight in humid weather?')">🛡️ Prevent tomato early blight?</button>
+          </div>
+
+          <div class="chat-input-bar">
+            <input type="text" id="chatInput" placeholder="Type your query in English, Hindi, Marathi, etc..." onkeypress="handleChatKeyPress(event)">
+            <button class="btn btn-primary" onclick="sendChatMessage()">
+              <i data-lucide="send"></i> Ask AI
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECTION 6: INCOME MAXIMIZER CALCULATOR -->
+    <div id="view-income" class="tab-view" style="display:none;">
+      <div class="card-panel">
+        <div class="panel-header">
+          <div>
+            <h2 class="panel-title"><i data-lucide="coins"></i> Farmer Income Maximizer & Input Cost Planner</h2>
+            <p style="color:var(--text-muted); font-size:0.875rem;">Track your seed, fertilizer, diesel, and labor expenses to calculate true ROI and compare traditional sale vs AgriPulse AI optimized selling timing.</p>
+          </div>
+        </div>
+
+        <div class="grid-2">
+          <div style="background:var(--bg-card-solid); border:1px solid var(--border-subtle); padding:1.5rem; border-radius:var(--radius-md);">
+            <h3 style="font-family:var(--font-heading); margin-bottom:1rem; color:var(--primary-emerald);">1. Input Cost Parameters (Per Acre)</h3>
+
+            <div style="display:flex; flex-direction:column; gap:1rem;">
+              <div>
+                <label style="font-size:0.85rem; color:var(--text-muted);">Seeds & Nursery Cost (₹)</label>
+                <input type="number" id="costSeeds" value="4500" class="filter-select" style="width:100%;" onchange="calculateIncome()">
+              </div>
+              <div>
+                <label style="font-size:0.85rem; color:var(--text-muted);">Fertilizer & Soil Nutrition (DAP/Urea) (₹)</label>
+                <input type="number" id="costFert" value="6800" class="filter-select" style="width:100%;" onchange="calculateIncome()">
+              </div>
+              <div>
+                <label style="font-size:0.85rem; color:var(--text-muted);">Irrigation & Diesel Engine Fuel (₹)</label>
+                <input type="number" id="costFuel" value="5200" class="filter-select" style="width:100%;" onchange="calculateIncome()">
+              </div>
+              <div>
+                <label style="font-size:0.85rem; color:var(--text-muted);">Labor & Harvesting Rental (₹)</label>
+                <input type="number" id="costLabor" value="8500" class="filter-select" style="width:100%;" onchange="calculateIncome()">
+              </div>
+              <div>
+                <label style="font-size:0.85rem; color:var(--text-muted);">Expected Crop Yield (Quintals / Acre)</label>
+                <input type="number" id="yieldQtl" value="28" class="filter-select" style="width:100%;" onchange="calculateIncome()">
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <div style="background:linear-gradient(135deg, rgba(15, 23, 42, 0.9), rgba(16, 185, 129, 0.1)); border:1px solid var(--border-glow); padding:1.5rem; border-radius:var(--radius-md);">
+              <h3 style="font-family:var(--font-heading); margin-bottom:1.5rem; color:#FFF;">2. Financial Profit Comparison</h3>
+
+              <div style="display:flex; flex-direction:column; gap:1.25rem;">
+                <div style="display:flex; justify-content:space-between; padding-bottom:0.75rem; border-bottom:1px solid var(--border-subtle);">
+                  <span style="color:var(--text-muted);">Total Input Cost / Acre</span>
+                  <span id="outTotalCost" style="font-family:var(--font-heading); font-weight:700; color:var(--accent-rose);">₹25,000</span>
+                </div>
+
+                <div style="background:rgba(7, 11, 20, 0.6); padding:1rem; border-radius:var(--radius-md);">
+                  <div style="font-size:0.8rem; color:var(--text-muted);">A. TRADITIONAL DISTRESS SALE (Mandi Middlemen Rate)</div>
+                  <div style="display:flex; justify-content:space-between; align-items:center; margin-top:0.3rem;">
+                    <span>Price: ₹1,850/Qtl</span>
+                    <span id="outTradProfit" style="font-family:var(--font-heading); font-weight:700; color:var(--accent-amber);">Net Profit: ₹26,800</span>
+                  </div>
+                </div>
+
+                <div style="background:rgba(16, 185, 129, 0.15); border:1px solid var(--border-glow); padding:1rem; border-radius:var(--radius-md);">
+                  <div style="font-size:0.8rem; color:var(--primary-emerald); font-weight:700;">B. AGRIPULSE AI OPTIMIZED TIMING + DIRECT B2B</div>
+                  <div style="display:flex; justify-content:space-between; align-items:center; margin-top:0.3rem;">
+                    <span>Optimized Price: ₹2,420/Qtl</span>
+                    <span id="outAiProfit" style="font-family:var(--font-heading); font-weight:800; font-size:1.2rem; color:var(--primary-emerald);">Net Profit: ₹42,760</span>
+                  </div>
+                </div>
+
+                <div style="text-align:center; margin-top:0.5rem; padding:1rem; background:rgba(245, 158, 11, 0.1); border-radius:var(--radius-md); border:1px solid var(--border-amber-glow);">
+                  <div style="font-size:0.85rem; color:var(--accent-amber);">ADDITIONAL NET INCOME GAIN</div>
+                  <div id="outGainBoost" style="font-family:var(--font-heading); font-size:2rem; font-weight:800; color:var(--accent-amber);">+₹15,960 / Acre (+59.5%)</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- B2B Deal Modal -->
+  <div class="modal-overlay" id="dealModal">
+    <div class="modal-box">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
+        <h3 style="font-family:var(--font-heading); color:var(--primary-emerald);" id="modalBuyerTitle">Lock Direct B2B Procurement Deal</h3>
+        <button onclick="closeModal()" style="background:none; border:none; color:var(--text-muted); cursor:pointer;"><i data-lucide="x"></i></button>
+      </div>
+      <p style="color:var(--text-muted); font-size:0.9rem; margin-bottom:1.5rem;" id="modalBuyerDesc">Verify batch quality specifications and create digital escrow contract.</p>
+
+      <div style="background:rgba(7, 11, 20, 0.8); border:1px solid var(--border-subtle); padding:1rem; border-radius:var(--radius-md); margin-bottom:1.5rem;">
+        <div style="display:flex; justify-content:space-between; font-size:0.85rem; margin-bottom:0.5rem;">
+          <span>Contracted Quantity:</span> <span style="font-weight:700;" id="modalQty">250 Quintals</span>
+        </div>
+        <div style="display:flex; justify-content:space-between; font-size:0.85rem; margin-bottom:0.5rem;">
+          <span>Agreed Price per Quintal:</span> <span style="font-weight:700; color:var(--primary-emerald);" id="modalRate">₹2,450 / Qtl</span>
+        </div>
+        <div style="display:flex; justify-content:space-between; font-size:0.85rem;">
+          <span>Total Escrow Value:</span> <span style="font-weight:800; font-size:1.1rem; color:var(--accent-amber);" id="modalTotal">₹6,12,500</span>
+        </div>
+      </div>
+
+      <div style="display:flex; gap:1rem;">
+        <button class="btn btn-outline" style="flex:1;" onclick="closeModal()">Cancel</button>
+        <button class="btn btn-primary" style="flex:1;" onclick="confirmDealEscrow()">
+          <i data-lucide="lock"></i> Lock Digital Escrow
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem;">
+      <div>
+        <div style="font-family:var(--font-heading); font-weight:700; color:var(--text-main);">AgriPulse AI Platform &copy; 2026</div>
+        <div>Built for Hackathon: Empowering Farmers & Rural Supply Chains with Data Intelligence</div>
+      </div>
+
+      <div style="display:flex; gap:1.5rem;">
+        <a href="#" style="color:var(--text-muted); text-decoration:none;" onclick="showToast('Govt e-NAM API Status: Connected')">e-NAM API Status</a>
+        <a href="#" style="color:var(--text-muted); text-decoration:none;" onclick="showToast('Agri-ML Model version 4.2 active')">ML Model Specs</a>
+        <a href="#" style="color:var(--text-muted); text-decoration:none;" onclick="showToast('24/7 Helpline: 1800-AGRI-PULSE')">Kisan Helpline</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>

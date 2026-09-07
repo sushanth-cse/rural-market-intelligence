@@ -1,0 +1,13 @@
+# Dependencies & Runtime
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Logs & System
+*.log
+.DS_Store
+Thumbs.db
+
+# IDEs
+.vscode/
+.idea/
