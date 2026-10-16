@@ -1,4 +1,4 @@
-# 🌾 FarmGain – Rural Market Intelligence & Direct Selling Platform
+# 🌾 FarmGain – Rural Market Intelligence   & Direct Selling Platform
 
 > **"Don't just find the highest PRICE. Find the highest PROFIT."**
 
