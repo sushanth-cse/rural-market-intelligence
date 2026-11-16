@@ -20,9 +20,9 @@ python server.py
 Open your browser and navigate to:
 [http://localhost:8000](http://localhost:8000)
 
----
+-----
 
-## 🌟 Key Features
+## 🌟 Key Features are
 
 1. **Highest Net Profit Recommendation Engine**:
    Computes Net Realization = Gross Revenue - Transportation Cost (Distance × Vehicle Rate/km) - Mandi Fees & Handling. Automatically ranks buyers primarily by **NET PROFIT** and tags the top option with **🏆 BEST OPTION**.
